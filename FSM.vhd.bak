@@ -1,0 +1,101 @@
+library ieee;
+use ieee.std_logic_1164.all;
+entity FSM is
+port(
+  reset, clk, w : in std_logic;
+  z : out std_logic );
+end FSM	;
+
+architecture behavioral of FSM is
+
+type state_available is (s0, s1, s2,s3,s4,s5,s6,s7,s8);
+signal present_state, next_state : state_available := s0; -- -- Declaration of two signals of this type
+begin
+comb_proc : process (present_state, w)
+begin
+case present_state is
+when s0 =>
+if w = '0' then
+next_state <= s1;
+z <= '0';
+else
+next_state <= s2;
+z <= '0';
+end if;
+when s1 =>
+if w = '0' then
+next_state <= s3;
+z <= '0';
+else
+next_state <= s2;
+z <= '0';
+end if;
+when s3 =>
+if w = '0' then
+next_state <= s5;
+z <= '0';
+else
+next_state <= s2;
+z <= '0';
+end if;
+when s5 =>
+if w = '0' then
+next_state <= s7;
+z <= '1';
+else
+next_state <= s2;
+z <= '0';
+end if;
+when s7 =>
+if w = '0' then
+next_state <= s7;
+z <= '1';
+else
+next_state <= s2;
+z <= '0';
+end if;
+when s2 =>
+if w = '1' then
+next_state <= s4;
+z <= '0';
+else
+next_state <= s1;
+z <= '0';
+end if;
+when s4 =>
+if w = '1' then
+next_state <= s6;
+z <= '0';
+else
+next_state <= s1;
+z <= '0';
+end if;
+when s6 =>
+if w = '1' then
+next_state <= s8;
+z <= '1';
+else
+next_state <= s1;
+z <= '0';
+end if;
+when s8 =>
+if w = '1' then
+next_state <= s8;
+z <= '1';
+else
+next_state <= s1;
+z <= '0';
+end if;
+end case;
+end process;
+
+clk_proc : process
+begin
+wait until (clk'event and clk = '1'); -- wait for rising edge of clk
+if reset = '1' then
+state <= s0;
+else
+state <= next_state;
+end if;
+end process;
+end behavioral; 
